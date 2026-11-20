@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FRC Scouting</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root {
+      --bg: #261f1a;
+      --surface: #332922;
+      --surface-2: #3f332a;
+      --stroke: #8c735b;
+      --stroke-bright: #c7a98b;
+      --text: #ede2d2;
+      --muted: #b09e8a;
+      --accent: #c68b59;
+      --accent-hover: #b37846;
+      --ok-bg: #293b2c;
+      --ok-stroke: #689f72;
+      --err-bg: #422624;
+      --err-stroke: #c46862;
+    }
+
+    * {
+      box-sizing: border-box;
+      border-radius: 0 !important;
+      box-shadow: none !important;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      padding: 24px 16px 56px;
+      line-height: 1.4;
+    }
+
+    .wrap {
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      background: var(--surface);
+      border: 1.5px solid var(--stroke);
+      padding: 10px 14px;
+      margin-bottom: 14px;
+    }
+
+    .top-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .nav-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .nav-btn {
+      background: var(--bg);
+      color: var(--text);
+      border: 1.5px solid var(--stroke);
+      padding: 6px 12px;
+      font-family: inherit;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+
+    .nav-btn:hover,
+    .nav-btn.active {
+      border-color: var(--stroke-bright);
+      background: var(--surface-2);
+    }
+
+    .panel {
+      background: var(--surface);
+      border: 1.5px solid var(--stroke);
+      padding: 22px;
+    }
+
+    h1,
+    h2 {
+      margin: 0 0 4px;
+      font-size: 1.45rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    .sub {
+      margin: 0 0 20px;
+      padding-bottom: 14px;
+      font-size: 0.88rem;
+      color: var(--muted);
+      border-bottom: 1px solid var(--stroke);
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .field {
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    input[type="number"],
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    textarea {
+      width: 100%;
+      background: var(--bg);
+      color: var(--text);
+      border: 1.5px solid var(--stroke);
+      padding: 10px 12px;
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 600;
+      outline: none;
+    }
+
+    input:focus,
+    textarea:focus {
+      border-color: var(--stroke-bright);
+      background: #2c241e;
+    }
+
+    .counter {
+      background: var(--surface-2);
+      border: 1.5px solid var(--stroke);
+      padding: 12px;
+    }
+
+    .counter-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .counter-num {
+      font-size: 1.35rem;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .step-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .step-btn {
+      background: var(--bg);
+      color: var(--text);
+      border: 1.5px solid var(--stroke);
+      padding: 8px 0;
+      font-family: inherit;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .step-btn:hover {
+      border-color: var(--stroke-bright);
+      background: var(--surface-2);
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+
+    .tag-btn {
+      background: var(--bg);
+      color: var(--muted);
+      border: 1.5px solid var(--stroke);
+      padding: 6px 10px;
+      font-family: inherit;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .tag-btn:hover {
+      color: var(--text);
+      border-color: var(--stroke-bright);
+    }
+
+    textarea {
+      min-height: 84px;
+      font-size: 0.92rem;
+      font-weight: 400;
+      resize: vertical;
+    }
+
+    .submit-btn {
+      width: 100%;
+      margin-top: 4px;
+      padding: 13px 16px;
+      background: var(--accent);
+      color: #1c1510;
+      border: 1.5px solid var(--stroke-bright);
+      font-family: inherit;
+      font-size: 0.92rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+
+    .submit-btn:hover:not(:disabled) {
+      background: var(--accent-hover);
+    }
+
+    .submit-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .status {
+      display: none;
+      margin-top: 14px;
+      padding: 11px 13px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      border: 1.5px solid var(--stroke);
+    }
+
+    .status.show {
+      display: block;
+    }
+
+    .status.ok {
+      background: var(--ok-bg);
+      border-color: var(--ok-stroke);
+      color: #d4edd8;
+    }
+
+    .status.err {
+      background: var(--err-bg);
+      border-color: var(--err-stroke);
+      color: #f4d2d0;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    .toolbar input {
+      flex: 1;
+      min-width: 160px;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border: 1.5px solid var(--stroke);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+
+    th,
+    td {
+      padding: 10px 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--stroke);
+      border-right: 1px solid var(--stroke);
+    }
+
+    th:last-child,
+    td:last-child {
+      border-right: none;
+    }
+
+    th {
+      background: var(--surface-2);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+    }
+
+    tr:nth-child(even) td {
+      background: rgba(0, 0, 0, 0.12);
+    }
+
+    @media (max-width: 520px) {
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="top-bar">
+      <span class="top-title">FRC Scouting</span>
+      <div class="nav-actions">
+        <button type="button" class="nav-btn active" id="tabScout">Scout Form</button>
+        <button type="button" class="nav-btn" id="tabData">View Data</button>
+      </div>
+    </div>
+
+    <!-- SCOUTING FORM VIEW -->
+    <div class="panel" id="scoutView">
+      <h1>Match Scouting</h1>
+      <p class="sub">Enter match numbers and notes directly into the database.</p>
+
+      <form id="scoutForm">
+        <div class="grid-2">
+          <div class="field">
+            <label for="teamNumber">Team Number</label>
+            <input type="number" id="teamNumber" placeholder="254" min="1" required />
+          </div>
+          <div class="field">
+            <label for="matchNumber">Match Number</label>
+            <input type="number" id="matchNumber" placeholder="1" min="1" required />
+          </div>
+        </div>
+
+        <div class="grid-2 field">
+          <div class="counter">
+            <div class="counter-top">
+              <label for="autoPoints" style="margin:0;">Auto Points</label>
+              <span class="counter-num" id="autoPreview">0</span>
+            </div>
+            <input type="number" id="autoPoints" value="0" min="0" required />
+            <div class="step-grid">
+              <button type="button" class="step-btn" data-target="autoPoints" data-delta="-1">-1</button>
+              <button type="button" class="step-btn" data-target="autoPoints" data-delta="1">+1</button>
+              <button type="button" class="step-btn" data-target="autoPoints" data-delta="2">+2</button>
+              <button type="button" class="step-btn" data-target="autoPoints" data-delta="5">+5</button>
+            </div>
+          </div>
+
+          <div class="counter">
+            <div class="counter-top">
+              <label for="teleopPoints" style="margin:0;">Teleop Points</label>
+              <span class="counter-num" id="teleopPreview">0</span>
+            </div>
+            <input type="number" id="teleopPoints" value="0" min="0" required />
+            <div class="step-grid">
+              <button type="button" class="step-btn" data-target="teleopPoints" data-delta="-1">-1</button>
+              <button type="button" class="step-btn" data-target="teleopPoints" data-delta="1">+1</button>
+              <button type="button" class="step-btn" data-target="teleopPoints" data-delta="2">+2</button>
+              <button type="button" class="step-btn" data-target="teleopPoints" data-delta="5">+5</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Tags</label>
+          <div class="tags">
+            <button type="button" class="tag-btn" data-tag="Strong defense">Strong defense</button>
+            <button type="button" class="tag-btn" data-tag="Fast intake">Fast intake</button>
+            <button type="button" class="tag-btn" data-tag="Tippy">Tippy</button>
+            <button type="button" class="tag-btn" data-tag="Broke down">Broke down</button>
+            <button type="button" class="tag-btn" data-tag="Solid driver">Solid driver</button>
+          </div>
+          <label for="notes">Notes</label>
+          <textarea id="notes" placeholder="Tap a tag or write notes..."></textarea>
+        </div>
+
+        <button type="submit" class="submit-btn" id="submitBtn">Submit Match</button>
+      </form>
+
+      <div id="status" class="status"></div>
+    </div>
+
+    <!-- PROTECTED DATA VIEW -->
+    <div class="panel hidden" id="dataView">
+      <!-- LOGIN GATE -->
+      <div id="authGate">
+        <h2>Strategy Access</h2>
+        <p class="sub">Sign in with your team credentials to view scouting logs.</p>
+        <form id="loginForm">
+          <div class="field">
+            <label for="loginEmail">Team Email</label>
+            <input type="email" id="loginEmail" placeholder="strategy@frc.local" required />
+          </div>
+          <div class="field">
+            <label for="loginPass">Password</label>
+            <input type="password" id="loginPass" placeholder="••••••••" required />
+          </div>
+          <button type="submit" class="submit-btn" id="loginBtn">Unlock Tables</button>
+        </form>
+        <div id="authStatus" class="status"></div>
+      </div>
+
+      <!-- DATA TABLE (SHOWN WHEN LOGGED IN) -->
+      <div id="tableSection" class="hidden">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+          <h2>Scouting Logs</h2>
+          <button type="button" class="nav-btn" id="logoutBtn">Lock / Sign Out</button>
+        </div>
+        <p class="sub" id="rowCount">Loading entries...</p>
+
+        <div class="toolbar">
+          <input type="text" id="teamFilter" placeholder="Filter by team # (e.g. 254)..." />
+          <button type="button" class="nav-btn" id="refreshBtn">Refresh</button>
+          <button type="button" class="nav-btn" id="csvBtn">Export CSV</button>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Team</th>
+                <th>Match</th>
+                <th>Auto</th>
+                <th>Teleop</th>
+                <th>Total</th>
+                <th>Notes</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const SUPABASE_URL = "https://salsqxwuazajymakgvol.supabase.co";
+
+    const SUPABASE_KEY = "sb_publishable_l5LBLPal6EOfObUxkpYL-w_jUwrAMff";
+
+    const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    // Navigation Tabs
+    const tabScout = document.getElementById("tabScout");
+    const tabData = document.getElementById("tabData");
+    const scoutView = document.getElementById("scoutView");
+    const dataView = document.getElementById("dataView");
+
+    tabScout.addEventListener("click", () => {
+      tabScout.classList.add("active");
+      tabData.classList.remove("active");
+      scoutView.classList.remove("hidden");
+      dataView.classList.add("hidden");
+    });
+
+    tabData.addEventListener("click", async () => {
+      tabData.classList.add("active");
+      tabScout.classList.remove("active");
+      dataView.classList.remove("hidden");
+      scoutView.classList.add("hidden");
+      await checkSession();
+    });
+
+    // Scouting Form Logic
+    const autoInput = document.getElementById("autoPoints");
+    const teleopInput = document.getElementById("teleopPoints");
+    const autoPreview = document.getElementById("autoPreview");
+    const teleopPreview = document.getElementById("teleopPreview");
+    const notesInput = document.getElementById("notes");
+    const statusEl = document.getElementById("status");
+    const submitBtn = document.getElementById("submitBtn");
+
+    function syncCounters() {
+      autoPreview.textContent = Math.max(0, Number(autoInput.value) || 0);
+      teleopPreview.textContent = Math.max(0, Number(teleopInput.value) || 0);
+    }
+
+    document.querySelectorAll(".step-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const input = document.getElementById(btn.dataset.target);
+        input.value = Math.max(0, (Number(input.value) || 0) + Number(btn.dataset.delta));
+        syncCounters();
+      });
+    });
+
+    autoInput.addEventListener("input", syncCounters);
+    teleopInput.addEventListener("input", syncCounters);
+
+    document.querySelectorAll(".tag-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const tag = btn.dataset.tag;
+        const current = notesInput.value.trim();
+        if (!current) {
+          notesInput.value = tag;
+        } else if (!current.split(",").map(s => s.trim()).includes(tag)) {
+          notesInput.value = `${current}, ${tag}`;
+        }
+      });
+    });
+
+    function showBanner(el, type, msg) {
+      el.className = `status show ${type}`;
+      el.textContent = msg;
+    }
+
+    document.getElementById("scoutForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      submitBtn.disabled = true;
+      showBanner(statusEl, "ok", "Saving...");
+
+      const payload = {
+        team_number: Number(document.getElementById("teamNumber").value),
+        match_number: Number(document.getElementById("matchNumber").value),
+        auto_points: Math.max(0, Number(autoInput.value) || 0),
+        teleop_points: Math.max(0, Number(teleopInput.value) || 0),
+        notes: notesInput.value.trim()
+      };
+
+      const { error } = await db.from("scouting").insert([payload]);
+      submitBtn.disabled = false;
+
+      if (error) {
+        showBanner(statusEl, "err", "Error: " + error.message);
+      } else {
+        showBanner(statusEl, "ok", `Saved Match #${payload.match_number} for Team ${payload.team_number}.`);
+        e.target.reset();
+        autoInput.value = "0";
+        teleopInput.value = "0";
+        syncCounters();
+      }
+    });
+
+    // Auth & Data Table Logic
+    const authGate = document.getElementById("authGate");
+    const tableSection = document.getElementById("tableSection");
+    const authStatus = document.getElementById("authStatus");
+    const tableBody = document.getElementById("tableBody");
+    const rowCount = document.getElementById("rowCount");
+    const teamFilter = document.getElementById("teamFilter");
+    let cachedRows = [];
+
+    async function checkSession() {
+      const { data } = await db.auth.getSession();
+      if (data.session) {
+        authGate.classList.add("hidden");
+        tableSection.classList.remove("hidden");
+        await loadRows();
+      } else {
+        authGate.classList.remove("hidden");
+        tableSection.classList.add("hidden");
+      }
+    }
+
+    document.getElementById("loginForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const loginBtn = document.getElementById("loginBtn");
+      loginBtn.disabled = true;
+      showBanner(authStatus, "ok", "Checking credentials...");
+
+      const email = document.getElementById("loginEmail").value.trim();
+      const password = document.getElementById("loginPass").value;
+
+      const { error } = await db.auth.signInWithPassword({ email, password });
+      loginBtn.disabled = false;
+
+      if (error) {
+        showBanner(authStatus, "err", error.message);
+      } else {
+        authStatus.className = "status";
+        e.target.reset();
+        await checkSession();
+      }
+    });
+
+    document.getElementById("logoutBtn").addEventListener("click", async () => {
+      await db.auth.signOut();
+      cachedRows = [];
+      tableBody.innerHTML = "";
+      await checkSession();
+    });
+
+    async function loadRows() {
+      rowCount.textContent = "Loading entries...";
+      const { data, error } = await db
+        .from("scouting")
+        .select("*")
+        .order("match_number", { ascending: false });
+
+      if (error) {
+        rowCount.textContent = "Error loading table: " + error.message;
+        return;
+      }
+
+      cachedRows = data || [];
+      renderTable();
+    }
+
+    function renderTable() {
+      const query = teamFilter.value.trim();
+      const filtered = query
+        ? cachedRows.filter(r => String(r.team_number).includes(query))
+        : cachedRows;
+
+      rowCount.textContent = `Showing ${filtered.length} of ${cachedRows.length} entries`;
+
+      if (!filtered.length) {
+        tableBody.innerHTML = `<tr><td colspan="6" style="color:var(--muted);">No matching entries found.</td></tr>`;
+        return;
+      }
+
+      tableBody.innerHTML = filtered.map(r => {
+        const auto = Number(r.auto_points) || 0;
+        const teleop = Number(r.teleop_points) || 0;
+        const safeNotes = (r.notes || "").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        return `
+          <tr>
+            <td><strong>${r.team_number}</strong></td>
+            <td>${r.match_number}</td>
+            <td>${auto}</td>
+            <td>${teleop}</td>
+            <td><strong>${auto + teleop}</strong></td>
+            <td>${safeNotes}</td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    teamFilter.addEventListener("input", renderTable);
+    document.getElementById("refreshBtn").addEventListener("click", loadRows);
+
+    document.getElementById("csvBtn").addEventListener("click", () => {
+      if (!cachedRows.length) return;
+      const headers = ["team_number", "match_number", "auto_points", "teleop_points", "total_points", "notes"];
+      const lines = [
+        headers.join(","),
+        ...cachedRows.map(r => {
+          const auto = Number(r.auto_points) || 0;
+          const teleop = Number(r.teleop_points) || 0;
+          const notes = `"${String(r.notes || "").replace(/"/g, '""')}"`;
+          return [r.team_number, r.match_number, auto, teleop, auto + teleop, notes].join(",");
+        })
+      ];
+      const blob = new Blob([lines.join("\n")], { type: "text/csv" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "frc-scouting.csv";
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+  </script>
+</body>
+
+</html>
