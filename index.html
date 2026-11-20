@@ -199,14 +199,16 @@
       background: var(--surface-2);
     }
 
-    .tags {
+    .information,
+    .booleans {
       display: flex;
       flex-wrap: wrap;
       gap: 6px;
       margin-bottom: 10px;
     }
 
-    .tag-btn {
+    .tag-btn,
+    .bool-btn {
       background: var(--bg);
       color: var(--muted);
       border: 1.5px solid var(--stroke);
@@ -217,9 +219,17 @@
       cursor: pointer;
     }
 
-    .tag-btn:hover {
+    .tag-btn:hover,
+    .bool-btn:hover {
       color: var(--text);
       border-color: var(--stroke-bright);
+    }
+
+    .tag-btn.active,
+    .bool-btn.active {
+      color: var(--text);
+      border-color: var(--stroke-bright);
+      background: var(--surface-2);
     }
 
     textarea {
@@ -294,24 +304,37 @@
       min-width: 160px;
     }
 
+    /* ...existing code... */
     .table-wrap {
-      overflow-x: auto;
+      overflow: auto;
+      max-height: 70vh;
       border: 1.5px solid var(--stroke);
     }
 
     table {
       width: 100%;
+      min-width: 900px;
       border-collapse: collapse;
       font-size: 0.88rem;
+      scroll-behavior: smooth;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    .table-wrap::-webkit-scrollbar {
+      display: none;
     }
 
     th,
     td {
       padding: 10px 12px;
       text-align: left;
+      white-space: nowrap;
       border-bottom: 1px solid var(--stroke);
       border-right: 1px solid var(--stroke);
     }
+
+    /* ...existing code... */
 
     th:last-child,
     td:last-child {
@@ -424,16 +447,25 @@
           </div>
         </div>
 
+
         <div class="field">
-          <label>Tags</label>
-          <div class="tags">
-            <button type="button" class="tag-btn" data-tag="Strong defense">Strong defense</button>
-            <button type="button" class="tag-btn" data-tag="Fast intake">Fast intake</button>
-            <button type="button" class="tag-btn" data-tag="Tippy">Tippy</button>
-            <button type="button" class="tag-btn" data-tag="Broke down">Broke down</button>
-            <button type="button" class="tag-btn" data-tag="Solid driver">Solid driver</button>
+          <label>problems</label>
+          <div class="booleans">
+            <button type="button" class="bool-btn" data-tag="broke">Broke</button>
+            <button type="button" class="bool-btn" data-tag="slow_speed">Slow speed</button>
+            <button type="button" class="bool-btn" data-tag="slow_intake">Slow intake</button>
+            <button type="button" class="bool-btn" data-tag="slow_shooting">Slow shooting</button>
+            <button type="button" class="bool-btn" data-tag="bad_accuracy">Bad accuracy</button>
+            <button type="button" class="bool-btn" data-tag="no_autonomous">No autonomous</button>
           </div>
-          <label for="notes">Notes</label>
+
+          <label>information</label>
+          <div class="information">
+            <button type="button" class="tag-btn" data-tag="strong_defense">Strong defense</button>
+            <button type="button" class="tag-btn" data-tag="fast_intake">Fast intake</button>
+            <button type="button" class="tag-btn" data-tag="good_driver">Good driver</button>
+          </div>
+          <label for="notes">additional notes</label>
           <textarea id="notes" placeholder="Tap a tag or write notes..."></textarea>
         </div>
 
@@ -487,6 +519,7 @@
                 <th>Teleop</th>
                 <th>Total</th>
                 <th>Notes</th>
+                <th>Tags</th>
               </tr>
             </thead>
             <tbody id="tableBody"></tbody>
@@ -558,15 +591,15 @@
     autoInput.addEventListener("input", syncCounters);
     teleopInput.addEventListener("input", syncCounters);
 
-    document.querySelectorAll(".tag-btn").forEach((btn) => {
+    const indicatorButtons = document.querySelectorAll(".tag-btn, .bool-btn");
+    indicatorButtons.forEach((btn) => {
+      btn.dataset.selected = "false";
+      btn.setAttribute("aria-pressed", "false");
       btn.addEventListener("click", () => {
-        const tag = btn.dataset.tag;
-        const current = notesInput.value.trim();
-        if (!current) {
-          notesInput.value = tag;
-        } else if (!current.split(",").map(s => s.trim()).includes(tag)) {
-          notesInput.value = `${current}, ${tag}`;
-        }
+        const selected = btn.dataset.selected !== "true";
+        btn.dataset.selected = String(selected);
+        btn.classList.toggle("active", selected);
+        btn.setAttribute("aria-pressed", String(selected));
       });
     });
 
@@ -585,7 +618,13 @@
         match_number: Number(document.getElementById("matchNumber").value),
         auto_points: Math.max(0, Number(autoInput.value) || 0),
         teleop_points: Math.max(0, Number(teleopInput.value) || 0),
-        notes: notesInput.value.trim()
+        notes: notesInput.value,
+        ...Object.fromEntries(
+          Array.from(indicatorButtons, (btn) => [
+            btn.dataset.tag,
+            btn.dataset.selected === "true"
+          ])
+        )
       };
 
       const { error } = await db.from("scouting").insert([payload]);
@@ -598,6 +637,11 @@
         e.target.reset();
         autoInput.value = "0";
         teleopInput.value = "0";
+        indicatorButtons.forEach((btn) => {
+          btn.dataset.selected = "false";
+          btn.classList.remove("active");
+          btn.setAttribute("aria-pressed", "false");
+        });
         syncCounters();
       }
     });
@@ -676,7 +720,7 @@
       rowCount.textContent = `Showing ${filtered.length} of ${cachedRows.length} entries`;
 
       if (!filtered.length) {
-        tableBody.innerHTML = `<tr><td colspan="6" style="color:var(--muted);">No matching entries found.</td></tr>`;
+        tableBody.innerHTML = `<tr><td colspan="7" style="color:var(--muted);">No matching entries found.</td></tr>`;
         return;
       }
 
@@ -684,6 +728,11 @@
         const auto = Number(r.auto_points) || 0;
         const teleop = Number(r.teleop_points) || 0;
         const safeNotes = (r.notes || "").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        const tags = Object.entries(r)
+          .filter(([, value]) => value === true)
+          .map(([column]) => column.replace(/_/g, " "))
+          .join(", ") || "—";
+
         return `
           <tr>
             <td><strong>${r.team_number}</strong></td>
@@ -692,6 +741,7 @@
             <td>${teleop}</td>
             <td><strong>${auto + teleop}</strong></td>
             <td>${safeNotes}</td>
+            <td>${tags}</td>
           </tr>
         `;
       }).join("");
