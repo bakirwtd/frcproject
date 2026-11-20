@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 
 <head>
   <meta charset="UTF-8" />
@@ -28,7 +28,6 @@
       box-sizing: border-box;
       border-radius: 5px !important;
       box-shadow: none !important;
-
     }
 
     *::placeholder {
@@ -244,7 +243,7 @@
       margin-top: 4px;
       padding: 13px 16px;
       background: var(--accent);
-      color: #1c1510;
+      color: #0a0908;
       border: 1.5px solid var(--stroke-bright);
       font-family: inherit;
       font-size: 0.92rem;
@@ -304,7 +303,6 @@
       min-width: 160px;
     }
 
-    /* ...existing code... */
     .table-wrap {
       overflow: auto;
       max-height: 70vh;
@@ -328,17 +326,15 @@
     th,
     td {
       padding: 10px 12px;
-      text-align: left;
+      text-align: start;
       white-space: nowrap;
       border-bottom: 1px solid var(--stroke);
-      border-right: 1px solid var(--stroke);
+      border-inline-end: 1px solid var(--stroke);
     }
-
-    /* ...existing code... */
 
     th:last-child,
     td:last-child {
-      border-right: none;
+      border-inline-end: none;
     }
 
     th {
@@ -388,10 +384,11 @@
 <body>
   <div class="wrap">
     <div class="top-bar">
-      <span class="top-title">FRC Scouting</span>
+      <span class="top-title" data-i18n="appTitle">FRC Scouting</span>
       <div class="nav-actions">
-        <button type="button" class="nav-btn active" id="tabScout">Scout Form</button>
-        <button type="button" class="nav-btn" id="tabData">View Data</button>
+        <button type="button" class="nav-btn active" id="tabScout" data-i18n="tabScout">Scout Form</button>
+        <button type="button" class="nav-btn" id="tabData" data-i18n="tabData">View Data</button>
+        <button type="button" class="nav-btn" id="languageBtn" aria-label="Switch to Arabic">العربية</button>
       </div>
     </div>
 
@@ -399,8 +396,8 @@
     <div class="panel" id="scoutView">
       <div class="panel-head">
         <div>
-          <h1>Match Scouting</h1>
-          <p class="sub">Enter match numbers and notes directly into the database.</p>
+          <h1 data-i18n="matchScouting">Match Scouting</h1>
+          <p class="sub" data-i18n="matchSub">Enter match numbers and notes directly into the database.</p>
         </div>
         <img style="background:var(--logo-bg)" src="Avatar.png" alt="Team avatar" class="avatar" />
       </div>
@@ -408,11 +405,11 @@
       <form id="scoutForm">
         <div class="grid-2">
           <div class="field">
-            <label for="teamNumber">Team Number</label>
+            <label for="teamNumber" data-i18n="teamNumber">Team Number</label>
             <input type="number" id="teamNumber" placeholder="254" min="1" required />
           </div>
           <div class="field">
-            <label for="matchNumber">Match Number</label>
+            <label for="matchNumber" data-i18n="matchNumber">Match Number</label>
             <input type="number" id="matchNumber" placeholder="1" min="1" required />
           </div>
         </div>
@@ -420,7 +417,7 @@
         <div class="grid-2 field">
           <div class="counter">
             <div class="counter-top">
-              <label for="autoPoints" style="margin:0;">Auto Points</label>
+              <label for="autoPoints" style="margin:0;" data-i18n="autoPoints">Auto Points</label>
               <span class="counter-num" id="autoPreview">0</span>
             </div>
             <input type="number" id="autoPoints" value="0" min="0" required />
@@ -434,7 +431,7 @@
 
           <div class="counter">
             <div class="counter-top">
-              <label for="teleopPoints" style="margin:0;">Teleop Points</label>
+              <label for="teleopPoints" style="margin:0;" data-i18n="teleopPoints">Teleop Points</label>
               <span class="counter-num" id="teleopPreview">0</span>
             </div>
             <input type="number" id="teleopPoints" value="0" min="0" required />
@@ -447,29 +444,29 @@
           </div>
         </div>
 
-
         <div class="field">
-          <label>problems</label>
+          <label data-i18n="problems">problems</label>
           <div class="booleans">
-            <button type="button" class="bool-btn" data-tag="broke">Broke</button>
-            <button type="button" class="bool-btn" data-tag="slow_speed">Slow speed</button>
-            <button type="button" class="bool-btn" data-tag="slow_intake">Slow intake</button>
-            <button type="button" class="bool-btn" data-tag="slow_shooting">Slow shooting</button>
-            <button type="button" class="bool-btn" data-tag="bad_accuracy">Bad accuracy</button>
-            <button type="button" class="bool-btn" data-tag="no_autonomous">No autonomous</button>
+            <button type="button" class="bool-btn" data-tag="broke" data-i18n="tag_broke">Broke</button>
+            <button type="button" class="bool-btn" data-tag="slow_speed" data-i18n="tag_slow_speed">Slow speed</button>
+            <button type="button" class="bool-btn" data-tag="slow_intake" data-i18n="tag_slow_intake">Slow intake</button>
+            <button type="button" class="bool-btn" data-tag="slow_shooting" data-i18n="tag_slow_shooting">Slow shooting</button>
+            <button type="button" class="bool-btn" data-tag="bad_accuracy" data-i18n="tag_bad_accuracy">Bad accuracy</button>
+            <button type="button" class="bool-btn" data-tag="no_autonomous" data-i18n="tag_no_autonomous">No autonomous</button>
           </div>
 
-          <label>information</label>
+          <label data-i18n="information">information</label>
           <div class="information">
-            <button type="button" class="tag-btn" data-tag="strong_defense">Strong defense</button>
-            <button type="button" class="tag-btn" data-tag="fast_intake">Fast intake</button>
-            <button type="button" class="tag-btn" data-tag="good_driver">Good driver</button>
+            <button type="button" class="tag-btn" data-tag="strong_defense" data-i18n="tag_strong_defense">Strong defense</button>
+            <button type="button" class="tag-btn" data-tag="fast_intake" data-i18n="tag_fast_intake">Fast intake</button>
+            <button type="button" class="tag-btn" data-tag="good_driver" data-i18n="tag_good_driver">Good driver</button>
           </div>
-          <label for="notes">additional notes</label>
-          <textarea id="notes" placeholder="Tap a tag or write notes..."></textarea>
+
+          <label for="notes" data-i18n="notesLabel">additional notes</label>
+          <textarea id="notes" placeholder="Tap a tag or write notes..." data-i18n-placeholder="notesPlaceholder"></textarea>
         </div>
 
-        <button type="submit" class="submit-btn" id="submitBtn">Submit Match</button>
+        <button type="submit" class="submit-btn" id="submitBtn" data-i18n="submitMatch">Submit Match</button>
       </form>
 
       <div id="status" class="status"></div>
@@ -479,18 +476,18 @@
     <div class="panel hidden" id="dataView">
       <!-- LOGIN GATE -->
       <div id="authGate">
-        <h2>Strategy Access</h2>
-        <p class="sub">Sign in with your team credentials to view scouting logs.</p>
+        <h2 data-i18n="strategyAccess">Strategy Access</h2>
+        <p class="sub" data-i18n="strategySub">Sign in with your team credentials to view scouting logs.</p>
         <form id="loginForm">
           <div class="field">
-            <label for="loginEmail">Team Email</label>
-            <input type="email" id="loginEmail" placeholder="Shared team email" required />
+            <label for="loginEmail" data-i18n="teamEmail">Team Email</label>
+            <input type="email" id="loginEmail" placeholder="Shared team email" data-i18n-placeholder="teamEmailPlaceholder" required />
           </div>
           <div class="field">
-            <label for="loginPass">Password</label>
+            <label for="loginPass" data-i18n="password">Password</label>
             <input type="password" id="loginPass" placeholder="••••••••" required />
           </div>
-          <button type="submit" class="submit-btn" id="loginBtn">Unlock Tables</button>
+          <button type="submit" class="submit-btn" id="loginBtn" data-i18n="unlockTables">Unlock Tables</button>
         </form>
         <div id="authStatus" class="status"></div>
       </div>
@@ -498,28 +495,28 @@
       <!-- DATA TABLE (SHOWN WHEN LOGGED IN) -->
       <div id="tableSection" class="hidden">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
-          <h2>Scouting Logs</h2>
-          <button type="button" class="nav-btn" id="logoutBtn">Lock / Sign Out</button>
+          <h2 data-i18n="scoutingLogs">Scouting Logs</h2>
+          <button type="button" class="nav-btn" id="logoutBtn" data-i18n="signOut">Lock / Sign Out</button>
         </div>
-        <p class="sub" id="rowCount">Loading entries...</p>
+        <p class="sub" id="rowCount" data-i18n="loadingEntries">Loading entries...</p>
 
         <div class="toolbar">
-          <input type="text" id="teamFilter" placeholder="Filter by team # (e.g. 254)..." />
-          <button type="button" class="nav-btn" id="refreshBtn">Refresh</button>
-          <button type="button" class="nav-btn" id="csvBtn">Export CSV</button>
+          <input type="text" id="teamFilter" placeholder="Filter by team # (e.g. 254)..." data-i18n-placeholder="filterPlaceholder" />
+          <button type="button" class="nav-btn" id="refreshBtn" data-i18n="refresh">Refresh</button>
+          <button type="button" class="nav-btn" id="csvBtn" data-i18n="exportCsv">Export CSV</button>
         </div>
 
         <div class="table-wrap">
           <table>
             <thead>
               <tr>
-                <th>Team</th>
-                <th>Match</th>
-                <th>Auto</th>
-                <th>Teleop</th>
-                <th>Total</th>
-                <th>Notes</th>
-                <th>Tags</th>
+                <th data-i18n="thTeam">Team</th>
+                <th data-i18n="thMatch">Match</th>
+                <th data-i18n="thAuto">Auto</th>
+                <th data-i18n="thTeleop">Teleop</th>
+                <th data-i18n="thTotal">Total</th>
+                <th data-i18n="thNotes">Notes</th>
+                <th data-i18n="thTags">Tags</th>
               </tr>
             </thead>
             <tbody id="tableBody"></tbody>
@@ -528,6 +525,7 @@
       </div>
     </div>
   </div>
+
   <h1 style="text-align:center; margin-top:15px; font-size:0.875rem; color:var(--muted);">Created by <a
       href="https://github.com/bakirwtd" target="_blank" style="color:var(--accent); text-decoration:none;">Bakir</a>,
     Powered by <a href="https://supabase.com" target="_blank"
@@ -537,13 +535,156 @@
   <img style="display:block; margin:0 auto; border: none; outline: none;" src="Avatar.png" alt="Team avatar"
     class="avatar" />
 
-
   <script>
     const SUPABASE_URL = "https://salsqxwuazajymakgvol.supabase.co";
-
     const SUPABASE_KEY = "sb_publishable_l5LBLPal6EOfObUxkpYL-w_jUwrAMff";
-
     const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    // Translations (English <-> Arabic)
+    const translations = {
+      en: {
+        langToggle: "العربية",
+        langAria: "Switch to Arabic",
+        appTitle: "FRC Scouting",
+        tabScout: "Scout Form",
+        tabData: "View Data",
+        matchScouting: "Match Scouting",
+        matchSub: "Enter match numbers and notes directly into the database.",
+        teamNumber: "Team Number",
+        matchNumber: "Match Number",
+        autoPoints: "Auto Points",
+        teleopPoints: "Teleop Points",
+        problems: "problems",
+        information: "information",
+        notesLabel: "additional notes",
+        notesPlaceholder: "Tap a tag or write notes...",
+        submitMatch: "Submit Match",
+        strategyAccess: "Strategy Access",
+        strategySub: "Sign in with your team credentials to view scouting logs.",
+        teamEmail: "Team Email",
+        teamEmailPlaceholder: "Shared team email",
+        password: "Password",
+        unlockTables: "Unlock Tables",
+        scoutingLogs: "Scouting Logs",
+        signOut: "Lock / Sign Out",
+        filterPlaceholder: "Filter by team # (e.g. 254)...",
+        refresh: "Refresh",
+        exportCsv: "Export CSV",
+        thTeam: "Team",
+        thMatch: "Match",
+        thAuto: "Auto",
+        thTeleop: "Teleop",
+        thTotal: "Total",
+        thNotes: "Notes",
+        thTags: "Tags",
+        noMatches: "No matching entries found.",
+        loadingEntries: "Loading entries...",
+        showingEntries: (shown, total) => `Showing ${shown} of ${total} entries`,
+        saving: "Saving...",
+        savedMsg: (match, team) => `Saved Match #${match} for Team ${team}.`,
+        checkingCreds: "Checking credentials...",
+        tag_broke: "Broke",
+        tag_slow_speed: "Slow speed",
+        tag_slow_intake: "Slow intake",
+        tag_slow_shooting: "Slow shooting",
+        tag_bad_accuracy: "Bad accuracy",
+        tag_no_autonomous: "No autonomous",
+        tag_strong_defense: "Strong defense",
+        tag_fast_intake: "Fast intake",
+        tag_good_driver: "Good driver"
+      },
+      ar: {
+        langToggle: "English",
+        langAria: "Switch to English",
+        appTitle: "استكشاف FRC",
+        tabScout: "نموذج الاستكشاف",
+        tabData: "عرض البيانات",
+        matchScouting: "استكشاف المباريات",
+        matchSub: "أدخل أرقام المباريات والملاحظات مباشرة إلى قاعدة البيانات.",
+        teamNumber: "رقم الفريق",
+        matchNumber: "رقم المباراة",
+        autoPoints: "نقاط الذاتي",
+        teleopPoints: "نقاط التحكم اليدوي",
+        problems: "المشاكل",
+        information: "معلومات إيجابية",
+        notesLabel: "ملاحظات إضافية",
+        notesPlaceholder: "اضغط على وسم أو اكتب ملاحظات...",
+        submitMatch: "إرسال المباراة",
+        strategyAccess: "دخول الاستراتيجية",
+        strategySub: "سجّل الدخول ببيانات الفريق لعرض سجلات الاستكشاف.",
+        teamEmail: "بريد الفريق",
+        teamEmailPlaceholder: "البريد المشترك للفريق",
+        password: "كلمة المرور",
+        unlockTables: "فتح الجداول",
+        scoutingLogs: "سجلات الاستكشاف",
+        signOut: "قفل / تسجيل خروج",
+        filterPlaceholder: "ابحث برقم الفريق (مثال: 254)...",
+        refresh: "تحديث",
+        exportCsv: "تصدير CSV",
+        thTeam: "الفريق",
+        thMatch: "المباراة",
+        thAuto: "ذاتي",
+        thTeleop: "يدوي",
+        thTotal: "المجموع",
+        thNotes: "الملاحظات",
+        thTags: "الوسوم",
+        noMatches: "لا توجد نتائج مطابقة.",
+        loadingEntries: "جارٍ تحميل السجلات...",
+        showingEntries: (shown, total) => `عرض ${shown} من أصل ${total} سجل`,
+        saving: "جارٍ الحفظ...",
+        savedMsg: (match, team) => `تم حفظ المباراة #${match} للفريق ${team}.`,
+        checkingCreds: "جارٍ التحقق من البيانات...",
+        tag_broke: "تعطل",
+        tag_slow_speed: "سرعة بطيئة",
+        tag_slow_intake: "التقاط بطيء",
+        tag_slow_shooting: "تصويب بطيء",
+        tag_bad_accuracy: "دقة ضعيفة",
+        tag_no_autonomous: "بدون ذاتي",
+        tag_strong_defense: "دفاع قوي",
+        tag_fast_intake: "التقاط سريع",
+        tag_good_driver: "سائق ممتاز"
+      }
+    };
+
+    let currentLang = localStorage.getItem("frc_lang") || "en";
+    const languageBtn = document.getElementById("languageBtn");
+
+    function t(key, ...args) {
+      const dict = translations[currentLang] || translations.en;
+      const val = dict[key] ?? translations.en[key];
+      return typeof val === "function" ? val(...args) : val;
+    }
+
+    function applyLanguage(lang) {
+      currentLang = lang === "ar" ? "ar" : "en";
+      localStorage.setItem("frc_lang", currentLang);
+
+      document.documentElement.lang = currentLang;
+      document.documentElement.dir = currentLang === "ar" ? "rtl" : "ltr";
+
+      languageBtn.textContent = t("langToggle");
+      languageBtn.setAttribute("aria-label", t("langAria"));
+
+      document.querySelectorAll("[data-i18n]").forEach((el) => {
+        const key = el.dataset.i18n;
+        const val = t(key);
+        if (typeof val === "string") el.textContent = val;
+      });
+
+      document.querySelectorAll("[data-i18n-placeholder]").forEach((el) => {
+        const key = el.dataset.i18nPlaceholder;
+        const val = t(key);
+        if (typeof val === "string") el.placeholder = val;
+      });
+
+      if (!tableSection.classList.contains("hidden")) {
+        renderTable();
+      }
+    }
+
+    languageBtn.addEventListener("click", () => {
+      applyLanguage(currentLang === "en" ? "ar" : "en");
+    });
 
     // Navigation Tabs
     const tabScout = document.getElementById("tabScout");
@@ -611,7 +752,7 @@
     document.getElementById("scoutForm").addEventListener("submit", async (e) => {
       e.preventDefault();
       submitBtn.disabled = true;
-      showBanner(statusEl, "ok", "Saving...");
+      showBanner(statusEl, "ok", t("saving"));
 
       const payload = {
         team_number: Number(document.getElementById("teamNumber").value),
@@ -633,7 +774,7 @@
       if (error) {
         showBanner(statusEl, "err", "Error: " + error.message);
       } else {
-        showBanner(statusEl, "ok", `Saved Match #${payload.match_number} for Team ${payload.team_number}.`);
+        showBanner(statusEl, "ok", t("savedMsg", payload.match_number, payload.team_number));
         e.target.reset();
         autoInput.value = "0";
         teleopInput.value = "0";
@@ -671,7 +812,7 @@
       e.preventDefault();
       const loginBtn = document.getElementById("loginBtn");
       loginBtn.disabled = true;
-      showBanner(authStatus, "ok", "Checking credentials...");
+      showBanner(authStatus, "ok", t("checkingCreds"));
 
       const email = document.getElementById("loginEmail").value.trim();
       const password = document.getElementById("loginPass").value;
@@ -696,7 +837,7 @@
     });
 
     async function loadRows() {
-      rowCount.textContent = "Loading entries...";
+      rowCount.textContent = t("loadingEntries");
       const { data, error } = await db
         .from("scouting")
         .select("*")
@@ -717,10 +858,10 @@
         ? cachedRows.filter(r => String(r.team_number).includes(query))
         : cachedRows;
 
-      rowCount.textContent = `Showing ${filtered.length} of ${cachedRows.length} entries`;
+      rowCount.textContent = t("showingEntries", filtered.length, cachedRows.length);
 
       if (!filtered.length) {
-        tableBody.innerHTML = `<tr><td colspan="7" style="color:var(--muted);">No matching entries found.</td></tr>`;
+        tableBody.innerHTML = `<tr><td colspan="7" style="color:var(--muted);">${t("noMatches")}</td></tr>`;
         return;
       }
 
@@ -730,7 +871,10 @@
         const safeNotes = (r.notes || "").replace(/</g, "&lt;").replace(/>/g, "&gt;");
         const tags = Object.entries(r)
           .filter(([, value]) => value === true)
-          .map(([column]) => column.replace(/_/g, " "))
+          .map(([column]) => {
+            const translated = t("tag_" + column);
+            return translated && !translated.startsWith("tag_") ? translated : column.replace(/_/g, " ");
+          })
           .join(", ") || "—";
 
         return `
@@ -770,6 +914,8 @@
       a.click();
       URL.revokeObjectURL(url);
     });
+
+    applyLanguage(currentLang);
   </script>
 </body>
 
