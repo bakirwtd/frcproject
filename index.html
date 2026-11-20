@@ -8,15 +8,15 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root {
-      --bg: #261f1a;
-      --surface: #332922;
-      --surface-2: #3f332a;
-      --stroke: #8c735b;
-      --stroke-bright: #c7a98b;
-      --text: #ede2d2;
-      --muted: #b09e8a;
-      --accent: #c68b59;
-      --accent-hover: #b37846;
+      --bg: #241001;
+      --surface: #612e06;
+      --surface-2: #4d2200;
+      --stroke: #000000;
+      --stroke-bright: #000000;
+      --text: #f07816;
+      --muted: #c56a2d;
+      --accent: #924400;
+      --accent-hover: #a74e00;
       --ok-bg: #293b2c;
       --ok-stroke: #689f72;
       --err-bg: #422624;
@@ -25,8 +25,14 @@
 
     * {
       box-sizing: border-box;
-      border-radius: 0 !important;
+      border-radius: 5px !important;
       box-shadow: none !important;
+
+    }
+
+    *::placeholder {
+      color: var(--muted);
+      opacity: 1;
     }
 
     body {
@@ -134,7 +140,7 @@
     input[type="password"],
     textarea {
       width: 100%;
-      background: var(--bg);
+      background: var(--bg) !important;
       color: var(--text);
       border: 1.5px solid var(--stroke);
       padding: 10px 12px;
