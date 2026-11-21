@@ -89,10 +89,15 @@
       cursor: pointer;
     }
 
-    .nav-btn:hover,
+    .nav-btn:hover:not(:disabled),
     .nav-btn.active {
       border-color: var(--stroke-bright);
       background: var(--surface-2);
+    }
+
+    .nav-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
     }
 
     .panel {
@@ -388,12 +393,19 @@
     .chart-scroll {
       overflow-x: auto;
       padding-bottom: 4px;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    .chart-scroll::-webkit-scrollbar {
+      display: none;
     }
 
     .chart-canvas-wrap {
       position: relative;
       height: 250px;
       min-width: 100%;
+      max-width: 300%;
     }
 
     @media (max-width: 520px) {
@@ -493,25 +505,52 @@
         </div>
 
         <div class="field">
-          <label data-i18n="problems">problems</label>
+          <div class="counter">
+            <div class="counter-top">
+              <label for="humanPoints" style="margin:0;" data-i18n="humanPoints">Human Shooter Points</label>
+              <span class="counter-num" id="humanPreview">0</span>
+            </div>
+            <input type="number" id="humanPoints" value="0" min="0" required />
+            <div class="step-grid">
+              <button type="button" class="step-btn" data-target="humanPoints" data-delta="-1">-1</button>
+              <button type="button" class="step-btn" data-target="humanPoints" data-delta="1">+1</button>
+              <button type="button" class="step-btn" data-target="humanPoints" data-delta="2">+2</button>
+              <button type="button" class="step-btn" data-target="humanPoints" data-delta="5">+5</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label data-i18n="problems">negatives</label>
           <div class="booleans">
             <button type="button" class="bool-btn" data-tag="broke" data-i18n="tag_broke">Broke</button>
             <button type="button" class="bool-btn" data-tag="slow_speed" data-i18n="tag_slow_speed">Slow speed</button>
-            <button type="button" class="bool-btn" data-tag="slow_intake" data-i18n="tag_slow_intake">Slow intake</button>
-            <button type="button" class="bool-btn" data-tag="slow_shooting" data-i18n="tag_slow_shooting">Slow shooting</button>
-            <button type="button" class="bool-btn" data-tag="bad_accuracy" data-i18n="tag_bad_accuracy">Bad accuracy</button>
-            <button type="button" class="bool-btn" data-tag="no_autonomous" data-i18n="tag_no_autonomous">No autonomous</button>
+            <button type="button" class="bool-btn" data-tag="slow_intake" data-i18n="tag_slow_intake">Slow
+              intake</button>
+            <button type="button" class="bool-btn" data-tag="slow_shooting" data-i18n="tag_slow_shooting">Slow
+              shooting</button>
+            <button type="button" class="bool-btn" data-tag="bad_accuracy" data-i18n="tag_bad_accuracy">Bad
+              accuracy</button>
+            <button type="button" class="bool-btn" data-tag="no_autonomous" data-i18n="tag_no_autonomous">No
+              autonomous</button>
+            <button type="button" class="bool-btn" data-tag="penalties" data-i18n="tag_penalties">Penalties</button>
           </div>
 
-          <label data-i18n="information">information</label>
+          <label data-i18n="information">positives</label>
           <div class="information">
-            <button type="button" class="tag-btn" data-tag="strong_defense" data-i18n="tag_strong_defense">Strong defense</button>
-            <button type="button" class="tag-btn" data-tag="fast_intake" data-i18n="tag_fast_intake">Fast intake</button>
-            <button type="button" class="tag-btn" data-tag="good_driver" data-i18n="tag_good_driver">Good driver</button>
+            <button type="button" class="tag-btn" data-tag="strong_defense" data-i18n="tag_strong_defense">Strong
+              defense</button>
+            <button type="button" class="tag-btn" data-tag="fast_intake" data-i18n="tag_fast_intake">Fast
+              intake</button>
+            <button type="button" class="tag-btn" data-tag="good_driver" data-i18n="tag_good_driver">Good
+              driver</button>
+            <button type="button" class="tag-btn" data-tag="has_human" data-i18n="tag_has_human">Has human</button>
+            <button type="button" class="tag-btn" data-tag="fast_cycle" data-i18n="tag_fast_cycle">Fast cycle</button>
           </div>
 
           <label for="notes" data-i18n="notesLabel">additional notes</label>
-          <textarea id="notes" placeholder="Tap a tag or write notes..." data-i18n-placeholder="notesPlaceholder"></textarea>
+          <textarea id="notes" placeholder="Tap a tag or write notes..."
+            data-i18n-placeholder="notesPlaceholder"></textarea>
         </div>
 
         <button type="submit" class="submit-btn" id="submitBtn" data-i18n="submitMatch">Submit Match</button>
@@ -525,17 +564,20 @@
       <!-- SHARED LOGIN GATE -->
       <div id="authGate">
         <h2 data-i18n="strategyAccess">Strategy Access</h2>
-        <p class="sub" data-i18n="strategySub">Sign in with your team credentials to view scouting logs and analytics.</p>
+        <p class="sub" data-i18n="strategySub">Sign in with your team credentials to view scouting logs and analytics.
+        </p>
         <form id="loginForm">
           <div class="field">
             <label for="loginEmail" data-i18n="teamEmail">Team Email</label>
-            <input type="email" id="loginEmail" placeholder="Shared team email" data-i18n-placeholder="teamEmailPlaceholder" required />
+            <input type="email" id="loginEmail" placeholder="Shared team email"
+              data-i18n-placeholder="teamEmailPlaceholder" required />
           </div>
           <div class="field">
             <label for="loginPass" data-i18n="password">Password</label>
             <input type="password" id="loginPass" placeholder="••••••••" required />
           </div>
-          <button type="submit" class="submit-btn" id="loginBtn" data-i18n="unlockTables">Unlock Data & Analytics</button>
+          <button type="submit" class="submit-btn" id="loginBtn" data-i18n="unlockTables">Unlock Data &
+            Analytics</button>
         </form>
         <div id="authStatus" class="status"></div>
       </div>
@@ -549,9 +591,11 @@
         <p class="sub" id="rowCount" data-i18n="loadingEntries">Loading entries...</p>
 
         <div class="toolbar">
-          <input type="text" id="teamFilter" placeholder="Filter by team # (e.g. 254)..." data-i18n-placeholder="filterPlaceholder" />
+          <input type="text" id="teamFilter" placeholder="Filter by team # (e.g. 254)..."
+            data-i18n-placeholder="filterPlaceholder" />
           <button type="button" class="nav-btn refresh-trigger" data-i18n="refresh">Refresh</button>
           <button type="button" class="nav-btn" id="csvBtn" data-i18n="exportCsv">Export CSV</button>
+          <button type="button" class="nav-btn seed-trigger" data-i18n="seedTestBtn">Seed 30 Test Teams</button>
         </div>
 
         <div class="table-wrap">
@@ -562,6 +606,7 @@
                 <th data-i18n="thMatch">Match</th>
                 <th data-i18n="thAuto">Auto</th>
                 <th data-i18n="thTeleop">Teleop</th>
+                <th data-i18n="thHuman">Human</th>
                 <th data-i18n="thTotal">Total</th>
                 <th data-i18n="thNotes">Notes</th>
                 <th data-i18n="thTags">Tags</th>
@@ -582,6 +627,7 @@
 
         <div class="toolbar">
           <button type="button" class="nav-btn refresh-trigger" data-i18n="refresh">Refresh</button>
+          <button type="button" class="nav-btn seed-trigger" data-i18n="seedTestBtn">Seed 30 Test Teams</button>
         </div>
 
         <div id="analyticsEmpty" class="hidden" style="color:var(--muted); padding:12px 0;" data-i18n="noAnalyticsData">
@@ -589,11 +635,11 @@
         </div>
 
         <div id="chartsContainer">
-          <!-- Chart 1: Overall Average Score (Auto + Teleop Stacked) -->
+          <!-- Chart 1: Overall Average Score (Auto + Teleop + Human Stacked) -->
           <div class="chart-card">
             <div class="chart-header">
               <span class="chart-title" data-i18n="chartTotalTitle">Avg Points Breakdown (Sorted by Total)</span>
-              <span class="chart-sub" data-i18n="chartTotalSub">Auto + Teleop avg per match</span>
+              <span class="chart-sub" data-i18n="chartTotalSub">Auto + Teleop + Human avg per match</span>
             </div>
             <div class="chart-scroll">
               <div class="chart-canvas-wrap" id="wrapTotalChart">
@@ -632,7 +678,7 @@
           <div class="chart-card">
             <div class="chart-header">
               <span class="chart-title" data-i18n="chartStrengthsTitle">Positive Strengths % (Sorted)</span>
-              <span class="chart-sub" data-i18n="chartStrengthsSub">Defense, fast intake, or good driver</span>
+              <span class="chart-sub" data-i18n="chartStrengthsSub">Defense, fast intake, good driver, or human</span>
             </div>
             <div class="chart-scroll">
               <div class="chart-canvas-wrap" id="wrapStrengthsChart">
@@ -665,13 +711,16 @@
       "slow_intake",
       "slow_shooting",
       "bad_accuracy",
-      "no_autonomous"
+      "no_autonomous",
+      "penalties"
     ];
 
     const POSITIVE_KEYS = [
       "strong_defense",
       "fast_intake",
-      "good_driver"
+      "good_driver",
+      "has_human",
+      "fast_cycle"
     ];
 
     // Translations (English <-> Arabic)
@@ -689,8 +738,11 @@
         matchNumber: "Match Number",
         autoPoints: "Auto Points",
         teleopPoints: "Teleop Points",
-        problems: "problems",
-        information: "information",
+        humanPoints: "Human Shooter Points",
+        problems: "negatives",
+        information: "positives",
+        tag_penalties: "Penalties",
+        tag_fast_cycle: "Fast cycle",
         notesLabel: "additional notes",
         notesPlaceholder: "Tap a tag or write notes...",
         submitMatch: "Submit Match",
@@ -706,10 +758,13 @@
         filterPlaceholder: "Filter by team # (e.g. 254)...",
         refresh: "Refresh",
         exportCsv: "Export CSV",
+        seedTestBtn: "Seed 30 Test Teams",
+        seedingTestBtn: "Seeding 30 Teams...",
         thTeam: "Team",
         thMatch: "Match",
         thAuto: "Auto",
         thTeleop: "Teleop",
+        thHuman: "Human",
         thTotal: "Total",
         thNotes: "Notes",
         thTags: "Tags",
@@ -722,15 +777,16 @@
         savedMsg: (match, team) => `Saved Match #${match} for Team ${team}.`,
         checkingCreds: "Checking credentials...",
         chartTotalTitle: "Avg Points Breakdown (Sorted by Total)",
-        chartTotalSub: "Auto + Teleop avg per match",
+        chartTotalSub: "Auto + Teleop + Human avg per match",
         chartAutoTitle: "Avg Autonomous Points (Sorted)",
         chartAutoSub: "Highest avg Auto score first",
         chartIssuesTitle: "Issue Rate % (Sorted Highest First)",
         chartIssuesSub: "% of matches with breakdowns or slowdowns",
         chartStrengthsTitle: "Positive Strengths % (Sorted)",
-        chartStrengthsSub: "Defense, fast intake, or good driver",
+        chartStrengthsSub: "Defense, fast intake, good driver, or human",
         legendAuto: "Avg Auto",
         legendTeleop: "Avg Teleop",
+        legendHuman: "Avg Human",
         legendIssueRate: "Matches w/ Issues (%)",
         legendStrengthRate: "Matches w/ Strengths (%)",
         matchesCount: (n) => `${n} match${n === 1 ? "" : "es"}`,
@@ -742,7 +798,8 @@
         tag_no_autonomous: "No autonomous",
         tag_strong_defense: "Strong defense",
         tag_fast_intake: "Fast intake",
-        tag_good_driver: "Good driver"
+        tag_good_driver: "Good driver",
+        tag_has_human: "Has human"
       },
       ar: {
         langToggle: "English",
@@ -757,8 +814,11 @@
         matchNumber: "رقم المباراة",
         autoPoints: "نقاط الذاتي",
         teleopPoints: "نقاط التحكم اليدوي",
+        humanPoints: "نقاط الرامي البشري",
         problems: "المشاكل",
         information: "معلومات إيجابية",
+        tag_penalties: "مخالفات",
+        tag_fast_cycle: "دورات سريعة",
         notesLabel: "ملاحظات إضافية",
         notesPlaceholder: "اضغط على وسم أو اكتب ملاحظات...",
         submitMatch: "إرسال المباراة",
@@ -774,10 +834,13 @@
         filterPlaceholder: "ابحث برقم الفريق (مثال: 254)...",
         refresh: "تحديث",
         exportCsv: "تصدير CSV",
+        seedTestBtn: "إضافة 30 فريق تجريبي",
+        seedingTestBtn: "جارٍ إضافة 30 فريق...",
         thTeam: "الفريق",
         thMatch: "المباراة",
         thAuto: "ذاتي",
         thTeleop: "يدوي",
+        thHuman: "بشري",
         thTotal: "المجموع",
         thNotes: "الملاحظات",
         thTags: "الوسوم",
@@ -790,15 +853,16 @@
         savedMsg: (match, team) => `تم حفظ المباراة #${match} للفريق ${team}.`,
         checkingCreds: "جارٍ التحقق من البيانات...",
         chartTotalTitle: "متوسط النقاط الإجمالي (مرتب من الأعلى)",
-        chartTotalSub: "متوسط الذاتي + التحكم اليدوي لكل مباراة",
+        chartTotalSub: "متوسط الذاتي + اليدوي + البشري لكل مباراة",
         chartAutoTitle: "متوسط نقاط الذاتي (مرتب)",
         chartAutoSub: "الأعلى في نقاط الذاتي أولاً",
         chartIssuesTitle: "نسبة المشاكل % (الأعلى أولاً)",
         chartIssuesSub: "نسبة المباريات التي شهدت أعطالاً أو بطئاً",
         chartStrengthsTitle: "نسبة نقاط القوة % (مرتب)",
-        chartStrengthsSub: "دفاع قوي، التقاط سريع، أو سائق ممتاز",
+        chartStrengthsSub: "دفاع قوي، التقاط سريع، سائق ممتاز، أو رامي بشري",
         legendAuto: "متوسط الذاتي",
         legendTeleop: "متوسط اليدوي",
+        legendHuman: "متوسط البشري",
         legendIssueRate: "مباريات بمشاكل (%)",
         legendStrengthRate: "مباريات بنقاط قوة (%)",
         matchesCount: (n) => `${n} مباريات`,
@@ -810,7 +874,8 @@
         tag_no_autonomous: "بدون ذاتي",
         tag_strong_defense: "دفاع قوي",
         tag_fast_intake: "التقاط سريع",
-        tag_good_driver: "سائق ممتاز"
+        tag_good_driver: "سائق ممتاز",
+        tag_has_human: "يوجد رامي بشري"
       }
     };
 
@@ -895,8 +960,10 @@
     // Scouting Form Logic
     const autoInput = document.getElementById("autoPoints");
     const teleopInput = document.getElementById("teleopPoints");
+    const humanInput = document.getElementById("humanPoints");
     const autoPreview = document.getElementById("autoPreview");
     const teleopPreview = document.getElementById("teleopPreview");
+    const humanPreview = document.getElementById("humanPreview");
     const notesInput = document.getElementById("notes");
     const statusEl = document.getElementById("status");
     const submitBtn = document.getElementById("submitBtn");
@@ -904,6 +971,7 @@
     function syncCounters() {
       autoPreview.textContent = Math.max(0, Number(autoInput.value) || 0);
       teleopPreview.textContent = Math.max(0, Number(teleopInput.value) || 0);
+      humanPreview.textContent = Math.max(0, Number(humanInput.value) || 0);
     }
 
     document.querySelectorAll(".step-btn").forEach((btn) => {
@@ -916,6 +984,7 @@
 
     autoInput.addEventListener("input", syncCounters);
     teleopInput.addEventListener("input", syncCounters);
+    humanInput.addEventListener("input", syncCounters);
 
     const indicatorButtons = document.querySelectorAll(".tag-btn, .bool-btn");
     indicatorButtons.forEach((btn) => {
@@ -944,6 +1013,7 @@
         match_number: Number(document.getElementById("matchNumber").value),
         auto_points: Math.max(0, Number(autoInput.value) || 0),
         teleop_points: Math.max(0, Number(teleopInput.value) || 0),
+        human_points: Math.max(0, Number(humanInput.value) || 0),
         notes: notesInput.value,
         ...Object.fromEntries(
           Array.from(indicatorButtons, (btn) => [
@@ -963,6 +1033,7 @@
         e.target.reset();
         autoInput.value = "0";
         teleopInput.value = "0";
+        humanInput.value = "0";
         indicatorButtons.forEach((btn) => {
           btn.dataset.selected = "false";
           btn.classList.remove("active");
@@ -1063,13 +1134,14 @@
       rowCount.textContent = t("showingEntries", filtered.length, cachedRows.length);
 
       if (!filtered.length) {
-        tableBody.innerHTML = `<tr><td colspan="7" style="color:var(--muted);">${t("noMatches")}</td></tr>`;
+        tableBody.innerHTML = `<tr><td colspan="8" style="color:var(--muted);">${t("noMatches")}</td></tr>`;
         return;
       }
 
       tableBody.innerHTML = filtered.map(r => {
         const auto = Number(r.auto_points) || 0;
         const teleop = Number(r.teleop_points) || 0;
+        const human = Number(r.human_points) || 0;
         const safeNotes = (r.notes || "").replace(/</g, "&lt;").replace(/>/g, "&gt;");
         const tags = Object.entries(r)
           .filter(([, value]) => value === true)
@@ -1085,13 +1157,137 @@
             <td>${r.match_number}</td>
             <td>${auto}</td>
             <td>${teleop}</td>
-            <td><strong>${auto + teleop}</strong></td>
+            <td>${human}</td>
+            <td><strong>${auto + teleop + human}</strong></td>
             <td>${safeNotes}</td>
             <td>${tags}</td>
           </tr>
         `;
       }).join("");
     }
+
+    // Seed 30 Random Teams for Testing
+    function randInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    async function seedRandomTeams() {
+      const seedButtons = document.querySelectorAll(".seed-trigger");
+      seedButtons.forEach((btn) => {
+        btn.disabled = true;
+        btn.textContent = t("seedingTestBtn");
+      });
+
+      const existingTeams = new Set(cachedRows.map((r) => Number(r.team_number)));
+      const newTeams = new Set();
+      while (newTeams.size < 30) {
+        const candidate = randInt(100, 9999);
+        if (!existingTeams.has(candidate)) {
+          newTeams.add(candidate);
+        }
+      }
+
+      const sampleNotes = [
+        "Solid cycle times across the field.",
+        "Struggled to align with speaker during teleop.",
+        "Great defense bot, slowed down opposing alliance.",
+        "Lost comms mid-match, recovered late.",
+        "Clean 3-piece auto routine.",
+        "Intake jammed once but cleared quickly.",
+        "Consistent scoring, very smooth driver.",
+        ""
+      ];
+
+      const rowsToInsert = [];
+
+      newTeams.forEach((teamNumber) => {
+        const archetype = Math.random();
+        const matchCount = randInt(3, 5);
+        const teamHasHuman = Math.random() < 0.75;
+
+        for (let m = 1; m <= matchCount; m++) {
+          let autoPoints = 0;
+          let teleopPoints = 0;
+          let humanPoints = 0;
+          const flags = {
+            broke: false,
+            slow_speed: false,
+            slow_intake: false,
+            slow_shooting: false,
+            bad_accuracy: false,
+            no_autonomous: false,
+            strong_defense: false,
+            fast_intake: false,
+            good_driver: false,
+            has_human: teamHasHuman
+          };
+
+          if (archetype < 0.25) {
+            // Top-tier offensive powerhouse
+            autoPoints = randInt(12, 22);
+            teleopPoints = randInt(28, 46);
+            humanPoints = teamHasHuman ? randInt(4, 12) : 0;
+            if (Math.random() < 0.65) flags.fast_intake = true;
+            if (Math.random() < 0.7) flags.good_driver = true;
+            if (Math.random() < 0.1) flags.bad_accuracy = true;
+          } else if (archetype < 0.55) {
+            // Solid mid-tier / defense specialist
+            autoPoints = randInt(5, 14);
+            teleopPoints = randInt(14, 28);
+            humanPoints = teamHasHuman ? randInt(2, 8) : 0;
+            if (Math.random() < 0.55) flags.strong_defense = true;
+            if (Math.random() < 0.35) flags.good_driver = true;
+            if (Math.random() < 0.25) flags.slow_shooting = true;
+            if (Math.random() < 0.2) flags.bad_accuracy = true;
+          } else if (archetype < 0.8) {
+            // Developing bot with occasional slowdowns
+            autoPoints = randInt(0, 8);
+            teleopPoints = randInt(6, 18);
+            humanPoints = teamHasHuman ? randInt(0, 6) : 0;
+            if (autoPoints === 0) flags.no_autonomous = true;
+            if (Math.random() < 0.45) flags.slow_speed = true;
+            if (Math.random() < 0.4) flags.slow_intake = true;
+            if (Math.random() < 0.35) flags.bad_accuracy = true;
+          } else {
+            // Unreliable / breakdown-prone bot
+            autoPoints = randInt(0, 6);
+            teleopPoints = randInt(0, 12);
+            humanPoints = teamHasHuman ? randInt(0, 4) : 0;
+            if (autoPoints === 0) flags.no_autonomous = true;
+            if (Math.random() < 0.5) flags.broke = true;
+            if (Math.random() < 0.45) flags.slow_speed = true;
+            if (Math.random() < 0.4) flags.slow_intake = true;
+          }
+
+          rowsToInsert.push({
+            team_number: teamNumber,
+            match_number: m,
+            auto_points: autoPoints,
+            teleop_points: teleopPoints,
+            human_points: humanPoints,
+            notes: sampleNotes[randInt(0, sampleNotes.length - 1)],
+            ...flags
+          });
+        }
+      });
+
+      const { error } = await db.from("scouting").insert(rowsToInsert);
+
+      seedButtons.forEach((btn) => {
+        btn.disabled = false;
+        btn.textContent = t("seedTestBtn");
+      });
+
+      if (error) {
+        alert("Error seeding test teams: " + error.message);
+      } else {
+        await loadRows();
+      }
+    }
+
+    document.querySelectorAll(".seed-trigger").forEach((btn) => {
+      btn.addEventListener("click", seedRandomTeams);
+    });
 
     // Analytics Aggregation & Charts
     function aggregateTeamStats(rows) {
@@ -1105,6 +1301,7 @@
             matches: 0,
             totalAuto: 0,
             totalTeleop: 0,
+            totalHuman: 0,
             matchesWithIssues: 0,
             matchesWithPositives: 0,
             issueCounts: {},
@@ -1116,6 +1313,7 @@
         entry.matches += 1;
         entry.totalAuto += Number(r.auto_points) || 0;
         entry.totalTeleop += Number(r.teleop_points) || 0;
+        entry.totalHuman += Number(r.human_points) || 0;
 
         let hadIssue = false;
         PROBLEM_KEYS.forEach((key) => {
@@ -1139,13 +1337,15 @@
       return Array.from(map.values()).map((item) => {
         const avgAuto = +(item.totalAuto / item.matches).toFixed(1);
         const avgTeleop = +(item.totalTeleop / item.matches).toFixed(1);
-        const avgTotal = +(avgAuto + avgTeleop).toFixed(1);
+        const avgHuman = +(item.totalHuman / item.matches).toFixed(1);
+        const avgTotal = +(avgAuto + avgTeleop + avgHuman).toFixed(1);
         const issueRate = Math.round((item.matchesWithIssues / item.matches) * 100);
         const positiveRate = Math.round((item.matchesWithPositives / item.matches) * 100);
         return {
           ...item,
           avgAuto,
           avgTeleop,
+          avgHuman,
           avgTotal,
           issueRate,
           positiveRate
@@ -1264,6 +1464,13 @@
               backgroundColor: "#ff6a00",
               borderColor: "#000000",
               borderWidth: 1
+            },
+            {
+              label: t("legendHuman"),
+              data: byTotal.map((s) => s.avgHuman),
+              backgroundColor: "#ffaa5e",
+              borderColor: "#000000",
+              borderWidth: 1
             }
           ]
         },
@@ -1369,14 +1576,15 @@
 
     document.getElementById("csvBtn").addEventListener("click", () => {
       if (!cachedRows.length) return;
-      const headers = ["team_number", "match_number", "auto_points", "teleop_points", "total_points", "notes"];
+      const headers = ["team_number", "match_number", "auto_points", "teleop_points", "human_points", "total_points", "notes"];
       const lines = [
         headers.join(","),
         ...cachedRows.map(r => {
           const auto = Number(r.auto_points) || 0;
           const teleop = Number(r.teleop_points) || 0;
+          const human = Number(r.human_points) || 0;
           const notes = `"${String(r.notes || "").replace(/"/g, '""')}"`;
-          return [r.team_number, r.match_number, auto, teleop, auto + teleop, notes].join(",");
+          return [r.team_number, r.match_number, auto, teleop, human, auto + teleop + human, notes].join(",");
         })
       ];
       const blob = new Blob([lines.join("\n")], { type: "text/csv" });
